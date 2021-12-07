@@ -1,15 +1,15 @@
 package algafoodapi.algafoodapi.infraestructure.repository;
 
-import algafoodapi.algafoodapi.domain.model.Cozinha;
 import algafoodapi.algafoodapi.domain.model.FormaPagamento;
-import algafoodapi.algafoodapi.repository.FormaPagamentoRepository;
-import org.springframework.http.ResponseEntity;
+import algafoodapi.algafoodapi.domain.repository.FormaPagamentoRepository;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Repository
 public class FormaPagamentoImpl implements FormaPagamentoRepository {
 
     @PersistenceContext

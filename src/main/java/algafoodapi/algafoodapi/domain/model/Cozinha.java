@@ -1,16 +1,28 @@
 package algafoodapi.algafoodapi.domain.model;
 
-import javax.persistence.*;
-import java.util.Objects;
+import algafoodapi.algafoodapi.core.validation.Groups;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+//usado para xml @JsonRootName("gastronomia")
 @Entity
 public class Cozinha {
 
+
+    @NotNull(groups = Groups.CozinhaId.class)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //JsonIgnore
+    //@JsonProperty("titulo")
     @Column(length = 30, nullable = false)
+    @NotBlank
     private String nome;
 
     public Long getId() {
@@ -27,6 +39,18 @@ public class Cozinha {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "cozinha")
+    private List<Restaurante> restaurantes = new ArrayList<>();
+
+    public List<Restaurante> getRestaurantes() {
+        return restaurantes;
+    }
+
+    public void setRestaurantes(List<Restaurante> restaurantes) {
+        this.restaurantes = restaurantes;
     }
 
     @Override

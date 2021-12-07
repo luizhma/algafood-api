@@ -1,46 +1,25 @@
 package algafoodapi.algafoodapi.domain.model;
 
+import algafoodapi.algafoodapi.core.validation.Groups;
+import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Objects;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
+@Data
 @Entity
 public class Estado {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @NotNull(groups = Groups.EstadoId.class)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
+    @NotBlank
     private String nome;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Estado estado = (Estado) o;
-        return Objects.equals(id, estado.id) && Objects.equals(nome, estado.nome);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, nome);
-    }
 }

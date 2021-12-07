@@ -1,66 +1,71 @@
 package algafoodapi.algafoodapi.domain.model;
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.Objects;
+import algafoodapi.algafoodapi.core.validation.Groups;
+import algafoodapi.algafoodapi.core.validation.TaxaFrete;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import javax.validation.groups.ConvertGroup;
+import javax.validation.groups.Default;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
 @Entity
 public class Restaurante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     @Column(length = 30, nullable = false)
     private String nome;
 
+    @PositiveOrZero
+    //@TaxaFrete
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public BigDecimal getTaxaFrete() {
-        return taxaFrete;
-    }
-
-    public void setTaxaFrete(BigDecimal taxaFrete) {
-        this.taxaFrete = taxaFrete;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Restaurante that = (Restaurante) o;
-        return id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
+    //@JsonIgnoreProperties("hibernateLazyInitializer")
+    @Valid
+    @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "cozinha_id", nullable = false)
+    @JoinColumn(name = "cozinha_id")
     private Cozinha cozinha;
 
-    public Cozinha getCozinha() {
-        return cozinha;
-    }
 
-    public void setCozinha(Cozinha cozinha) {
-        this.cozinha = cozinha;
-    }
+    @JsonIgnore
+    @Embedded
+    private Endereco endereco;
+
+
+    @JsonIgnore
+    @CreationTimestamp
+    @Column(columnDefinition = "dateTime")
+    private LocalDateTime dataCadastro;
+
+    @JsonIgnore
+    @UpdateTimestamp
+    @Column(columnDefinition = "dateTime")
+    private LocalDateTime dataAtualizacao;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "restaurante_forma_pagamento",
+    joinColumns = @JoinColumn(name = "restaurante_id"),
+    inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
+    private List<FormaPagamento> formasPagamento = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "restaurante")
+    private List<Produto> produtos = new ArrayList<>();
+
 }
